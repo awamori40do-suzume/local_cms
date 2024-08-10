@@ -27,3 +27,21 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+.layout-A {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.layout-B {
+    background-color: #e0e0ff;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.content-block {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
