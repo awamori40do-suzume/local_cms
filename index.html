@@ -13,13 +13,17 @@
         <h2>コンテンツ管理</h2>
         <input type="text" id="page-title" placeholder="タイトル">
         <textarea id="page-content" placeholder="コンテンツ"></textarea>
+        <div>
+            <label><input type="radio" name="layout" value="layoutA" checked> レイアウトA</label>
+            <label><input type="radio" name="layout" value="layoutB"> レイアウトB</label>
+        </div>
+        <button onclick="addContent()">追加</button>
         <button onclick="saveContent()">保存</button>
     </div>
     
     <!-- コンテンツ表示エリア -->
     <div id="content-display">
-        <h2 id="display-title"></h2>
-        <div id="display-content"></div>
+        <h2>プレビュー</h2>
     </div>
 
     <script src="cms.js"></script>
