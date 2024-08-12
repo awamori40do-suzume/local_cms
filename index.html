@@ -11,19 +11,23 @@
     <!-- CMS 管理パネル -->
     <div id="cms">
         <h2>コンテンツ管理</h2>
-        <input type="text" id="page-title" placeholder="タイトル">
-        <textarea id="page-content" placeholder="コンテンツ"></textarea>
-        <div>
-            <label><input type="radio" name="layout" value="layoutA" checked> レイアウトA</label>
-            <label><input type="radio" name="layout" value="layoutB"> レイアウトB</label>
+        <label for="layout-select">レイアウトを選択:</label>
+        <select id="layout-select" onchange="updateLayout()">
+            <option value="A">レイアウトA</option>
+            <option value="B">レイアウトB</option>
+        </select>
+        <div id="layout-specific-fields">
+            <!-- ここにレイアウトごとの入力欄が表示されます -->
         </div>
         <button onclick="addContent()">追加</button>
-        <button onclick="saveContent()">保存</button>
+        <button onclick="saveAllContent()">保存</button>
     </div>
     
     <!-- コンテンツ表示エリア -->
     <div id="content-display">
         <h2>プレビュー</h2>
+        <div id="preview"></div>
+        <button onclick="clearAll()">All クリア</button>
     </div>
 
     <script src="cms.js"></script>
