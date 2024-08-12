@@ -7,13 +7,13 @@ body {
     margin-bottom: 20px;
 }
 
-#page-title, #page-content {
+#page-title, #page-content, #image-url, #alt-text, #link-title, #link-content, #link-image {
     width: 100%;
     margin-bottom: 10px;
 }
 
 #page-content {
-    height: 200px;
+    height: 100px;
 }
 
 button {
@@ -22,26 +22,19 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    margin-right: 5px;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-.layout-A {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin-bottom: 10px;
+.content-section {
+    margin-bottom: 20px;
 }
 
-.layout-B {
-    background-color: #e0e0ff;
-    padding: 10px;
+select {
     margin-bottom: 10px;
-}
-
-.content-block {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
 }
