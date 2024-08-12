@@ -1,70 +1,112 @@
-let contents = [];
+let contentArray = [];
 
 document.addEventListener("DOMContentLoaded", function() {
-    loadContent();
+    updateLayout(); // ページロード時にレイアウトAの入力欄を表示
 });
 
+function updateLayout() {
+    const layoutSelect = document.getElementById("layout-select").value;
+    const layoutFields = document.getElementById("layout-specific-fields");
+    
+    layoutFields.innerHTML = ''; // 既存の入力欄をクリア
+
+    if (layoutSelect === "A") {
+        layoutFields.innerHTML = `
+            <input type="text" id="page-title" placeholder="タイトル"><br>
+            <textarea id="page-content" placeholder="コンテンツ"></textarea><br>
+            <input type="text" id="image-url" placeholder="画像URL"><br>
+            <input type="text" id="alt-text" placeholder="altテキスト"><br>
+            <input type="text" id="link-title" placeholder="タイトルのリンクURL"><br>
+            <input type="text" id="link-content" placeholder="コンテンツのリンクURL"><br>
+            <input type="text" id="link-image" placeholder="画像のリンクURL">
+        `;
+    } else if (layoutSelect === "B") {
+        layoutFields.innerHTML = `
+            <input type="text" id="page-title" placeholder="タイトル"><br>
+            <textarea id="page-content" placeholder="コンテンツ"></textarea><br>
+            <input type="text" id="link-title" placeholder="タイトルのリンクURL"><br>
+            <input type="text" id="link-content" placeholder="コンテンツのリンクURL">
+        `;
+    }
+}
+
 function addContent() {
+    const layoutSelect = document.getElementById("layout-select").value;
     let title = document.getElementById('page-title').value;
     let content = document.getElementById('page-content').value;
-    let layout = document.querySelector('input[name="layout"]:checked').value;
-    
+    let imageUrl = document.getElementById('image-url') ? document.getElementById('image-url').value : '';
+    let altText = document.getElementById('alt-text') ? document.getElementById('alt-text').value : '';
+    let linkTitle = document.getElementById('link-title').value;
+    let linkContent = document.getElementById('link-content').value;
+    let linkImage = document.getElementById('link-image') ? document.getElementById('link-image').value : '';
+
     if (title && content) {
-        const newContent = { title: title, content: content, layout: layout };
-        contents.push(newContent);
-        displayContent(newContent);
+        const contentObject = { layout: layoutSelect, title, content, imageUrl, altText, linkTitle, linkContent, linkImage };
+        contentArray.push(contentObject);
+        updatePreview();
     } else {
         alert('タイトルとコンテンツを入力してください。');
     }
 }
 
-function displayContent(contentData) {
-    const displayArea = document.getElementById('content-display');
+function updatePreview() {
+    const preview = document.getElementById("preview");
+    preview.innerHTML = "";
 
-    let contentDiv = document.createElement('div');
-    contentDiv.className = contentData.layout;
-    
-    let titleElement = document.createElement('h3');
-    titleElement.innerText = contentData.title;
+    contentArray.forEach((content, index) => {
+        let section = document.createElement("div");
+        section.className = "content-section";
+        
+        let titleHtml = content.linkTitle ? `<a href="${content.linkTitle}">${content.title}</a>` : content.title;
+        let contentHtml = content.linkContent ? `<a href="${content.linkContent}">${content.content}</a>` : content.content;
+        
+        if (content.layout === "A") {
+            let imageHtml = content.imageUrl ? `<a href="${content.linkImage}"><img src="${content.imageUrl}" alt="${content.altText}"></a>` : '';
+            section.innerHTML = `
+                <h3>${titleHtml}</h3>
+                <p>${contentHtml}</p>
+                ${imageHtml}
+            `;
+        } else if (content.layout === "B") {
+            section.innerHTML = `
+                <h3>${titleHtml}</h3>
+                <p>${contentHtml}</p>
+            `;
+        }
 
-    let contentElement = document.createElement('p');
-    contentElement.innerText = contentData.content;
+        let clearButton = document.createElement("button");
+        clearButton.innerText = "クリア";
+        clearButton.onclick = function() {
+            contentArray.splice(index, 1);
+            updatePreview();
+        };
 
-    contentDiv.appendChild(titleElement);
-    contentDiv.appendChild(contentElement);
-
-    displayArea.appendChild(contentDiv);
+        section.appendChild(clearButton);
+        preview.appendChild(section);
+    });
 }
 
-function saveContent() {
-    localStorage.setItem('contents', JSON.stringify(contents));
-    alert('コンテンツが保存されました！');
-    writeContentToFile();
+function clearAll() {
+    contentArray = [];
+    updatePreview();
 }
 
-function loadContent() {
-    const savedContents = JSON.parse(localStorage.getItem('contents')) || [];
-    contents = savedContents;
+function saveAllContent() {
+    const htmlContent = contentArray.map(content => {
+        let titleHtml = content.linkTitle ? `<a href="${content.linkTitle}">${content.title}</a>` : content.title;
+        let contentHtml = content.linkContent ? `<a href="${content.linkContent}">${content.content}</a>` : content.content;
 
-    for (let content of contents) {
-        displayContent(content);
-    }
-}
+        if (content.layout === "A") {
+            let imageHtml = content.imageUrl ? `<a href="${content.linkImage}"><img src="${content.imageUrl}" alt="${content.altText}"></a>` : '';
+            return `<h3>${titleHtml}</h3><p>${contentHtml}</p>${imageHtml}`;
+        } else if (content.layout === "B") {
+            return `<h3>${titleHtml}</h3><p>${contentHtml}</p>`;
+        }
+    }).join("\n");
 
-function writeContentToFile() {
-    let htmlContent = "<html><head><title>保存されたコンテンツ</title></head><body>";
-
-    for (let content of contents) {
-        htmlContent += `<div class="${content.layout}"><h3>${content.title}</h3><p>${content.content}</p></div>`;
-    }
-
-    htmlContent += "</body></html>";
-
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const link = document.createElement('a');
+    let blob = new Blob([htmlContent], { type: "text/html" });
+    let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = 'saved_content.html';
-    document.body.appendChild(link);
+    link.download = "content.html";
     link.click();
-    document.body.removeChild(link);
 }
