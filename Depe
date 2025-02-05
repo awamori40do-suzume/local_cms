@@ -46,3 +46,52 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユニーク差分チェック</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        .container { display: flex; justify-content: center; gap: 20px; }
+        textarea { width: 300px; height: 300px; padding: 10px; font-size: 16px; }
+        .output { width: 300px; height: 300px; padding: 10px; font-size: 16px; background: #f8f8f8; border: 1px solid #ccc; overflow: auto; text-align: left; }
+        .added { color: #008000; }  /* 追加された行（緑） */
+        .removed { color: #ff0000; } /* 削除された行（赤） */
+    </style>
+</head>
+<body>
+
+    <h2>ユニークなデータ出力</h2>
+    <div class="container">
+        <textarea id="input1" placeholder="リスト1（改行区切り）"></textarea>
+        <div id="diffOutput" class="output"></div>
+        <textarea id="input2" placeholder="リスト2（改行区切り）"></textarea>
+    </div>
+
+    <script>
+        function compareLists() {
+            let list1 = document.getElementById("input1").value.split("\n").map(line => line.trim()).filter(line => line);
+            let list2 = document.getElementById("input2").value.split("\n").map(line => line.trim()).filter(line => line);
+
+            let set1 = new Set(list1);
+            let set2 = new Set(list2);
+
+            let uniqueList1 = list1.filter(item => !set2.has(item)); // list1 にあって list2 にないもの
+            let uniqueList2 = list2.filter(item => !set1.has(item)); // list2 にあって list1 にないもの
+
+            let resultHTML = uniqueList1.map(item => `<div class="removed">- ${item}</div>`).join("") +
+                             uniqueList2.map(item => `<div class="added">+ ${item}</div>`).join("");
+
+            document.getElementById("diffOutput").innerHTML = resultHTML || "<div>ユニークなデータなし</div>";
+        }
+
+        // リアルタイムで差分チェック
+        document.getElementById("input1").addEventListener("input", compareLists);
+        document.getElementById("input2").addEventListener("input", compareLists);
+    </script>
+
+</body>
+</html>
