@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>差分チェック</title>
+    <style>
+        textarea { width: 200px; height: 100px; }
+        .container { display: flex; gap: 10px; }
+        .output { margin-top: 10px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <textarea id="input1" placeholder="リスト1（改行区切り）"></textarea>
+        <textarea id="input2" placeholder="リスト2（改行区切り）"></textarea>
+    </div>
+
+    <button onclick="compareLists()">差分チェック</button>
+
+    <h3>ユニークなデータ</h3>
+    <div id="uniqueOutput" class="output"></div>
+
+    <script>
+        function compareLists() {
+            // テキストエリアの値を取得し、改行ごとに配列化
+            let list1 = document.getElementById("input1").value.split("\n").map(item => item.trim()).filter(item => item);
+            let list2 = document.getElementById("input2").value.split("\n").map(item => item.trim()).filter(item => item);
+
+            // Set を使って差分を取得
+            let set1 = new Set(list1);
+            let set2 = new Set(list2);
+
+            let uniqueList1 = list1.filter(item => !set2.has(item)); // list1 にあって list2 にないもの
+            let uniqueList2 = list2.filter(item => !set1.has(item)); // list2 にあって list1 にないもの
+
+            let uniqueItems = [...new Set([...uniqueList1, ...uniqueList2])]; // 重複を排除
+
+            // 結果を表示
+            document.getElementById("uniqueOutput").textContent = uniqueItems.length > 0 
+                ? uniqueItems.join("\n") 
+                : "ユニークなデータはありません";
+        }
+    </script>
+
+</body>
+</html>
